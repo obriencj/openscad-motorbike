@@ -8,6 +8,54 @@ use <common.scad>;
 
 
 
+module v_bracket(thick=2.1) {
+     // todo: let's make this less of a mess.
+
+     y_hole_space = 51;
+
+     b_offset = 45 / 2;
+
+     translate([0, -y_hole_space, 0])
+     difference() {
+	  union() {
+	       hull() {
+		    cylinder(thick, r=20/2);
+		    translate([b_offset, y_hole_space, 0]) {
+			 cylinder(thick, r=15/2);
+		    };
+	       };
+	       hull() {
+		    cylinder(thick, r=20/2);
+		    translate([-b_offset, y_hole_space, 0]) {
+			 cylinder(thick, r=15/2);
+		    };
+	       };
+	  };
+
+	  translate([0, 0, -0.5]) {
+	       translate([b_offset, y_hole_space, 0]) {
+		    cylinder(thick+1, r=6.5/2);
+	       };
+	       translate([-b_offset, y_hole_space, 0]) {
+		    cylinder(thick+1, r=6.5/2);
+	       };
+	       cylinder(thick+1, r=10/2);
+
+
+	       hull() {
+		    small_r = (44 - 26) / 2;
+		    translate([0, 29, 0]) {
+			 cylinder(thick+1, r=small_r);
+		    };
+		    translate([0, 58, 0]) {
+			 cylinder(thick+1, r=32/2);
+		    };
+	       };
+	  };
+     };
+}
+
+
 module gauge_plug(height=23, thread=13) {
      stub = height - thread;
 
@@ -26,7 +74,7 @@ module gauge_plug(height=23, thread=13) {
 }
 
 
-module mini_gauge($fn=50) {
+module mini_gauge(bracket=false, $fn=50) {
      rim_r = 67 / 2;
      rim_h = 10.5;
 
@@ -77,7 +125,7 @@ module mini_gauge($fn=50) {
 			 // washer to hold the internals in place. The
 			 // remainder is for mounting the unit.
 			 translate([bolt_offset, 0, -bolt_lost_l]) {
-			      cylinder(bolt_lost_l, r=bolt_lost_r);
+			      cylinder(bolt_lost_l, r=bolt_lost_r, $fn=6);
 			 };
 		    };
 	       };
@@ -92,10 +140,30 @@ module mini_gauge($fn=50) {
 	       cylinder(face_inset + 1, r=face_r);
 	  };
      };
+
+     if (bracket == true) {
+	  bracket_thick = 2.1;
+	  bracket_down = bolt_lost_l + bracket_thick;
+
+	  translate([0, 0, -bracket_down]) {
+	       color("Silver") v_bracket(thick=bracket_thick);
+	  };
+
+	  bracket_bolt_l = 4.8;
+	  bracket_bolt_down = bracket_down + bracket_bolt_l;
+
+	  duplicate(rotate_v=[0, 0, 180]) {
+	       color("Silver") {
+		    translate([bolt_offset, 0, -bracket_bolt_down]) {
+			 cylinder(bracket_bolt_l, r=bolt_lost_r, $fn=6);
+		    };
+	       };
+	  };
+     };
 }
 
 
-mini_gauge();
+mini_gauge(bracket=true);
 
 
 // The end.
