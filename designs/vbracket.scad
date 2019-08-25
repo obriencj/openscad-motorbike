@@ -12,8 +12,11 @@ module v_bracket(thick=2.1, $fn=50) {
 
      // todo: let's make this less of a mess.
 
-     y_hole_space = 51;
+     // how far from the main mounting hole center to the smaller
+     // mounting hole centers along the y axis
+     y_hole_space = 50;
 
+     // distance between bolts, split in half since we'll duplicate
      b_offset = 45 / 2;
 
      translate([0, -y_hole_space, 0])
@@ -45,7 +48,7 @@ module v_bracket(thick=2.1, $fn=50) {
 
 	       hull() {
 		    small_r = (44 - 26) / 2;
-		    translate([0, 29, 0]) {
+		    translate([0, 30, 0]) {
 			 cylinder(thick+1, r=small_r);
 		    };
 		    translate([0, 58, 0]) {
