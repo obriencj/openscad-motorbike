@@ -11,7 +11,7 @@ use <vbracket.scad>;
 module gauge_cable_plug(height=23, thread=13) {
      /*
        A speedo or tacho cable connector.
-     *
+     */
 
      stub = height - thread;
 
@@ -36,13 +36,13 @@ module mini_gauge(bracket=false, $fn=50) {
      */
 
      rim_r = 67 / 2;
-     rim_h = 10.5;
+     rim_h = 9;
 
      body_r = 61 / 2;
-     body_h = 53.5 - rim_h;
+     body_h = 53 - rim_h;
 
      // mounting bolt, overall
-     bolt_r = 6 / 2;
+     bolt_r = 5 / 2;
      bolt_l = 13;
      bolt_offset = 45 / 2;
 
@@ -50,7 +50,8 @@ module mini_gauge(bracket=false, $fn=50) {
      bolt_lost_r = 9 / 2;
      bolt_lost_l = 6;
 
-     face_r = rim_r - 4.5;
+     rim_brim = 4.5;
+     face_r = rim_r - rim_brim;
      face_inset = 3;
 
      plug_height = 26;
