@@ -5,58 +5,14 @@
 
 
 use <common.scad>;
+use <vbracket.scad>;
 
 
+module gauge_cable_plug(height=23, thread=13) {
+     /*
+       A speedo or tacho cable connector.
+     *
 
-module v_bracket(thick=2.1) {
-     // todo: let's make this less of a mess.
-
-     y_hole_space = 51;
-
-     b_offset = 45 / 2;
-
-     translate([0, -y_hole_space, 0])
-     difference() {
-	  union() {
-	       hull() {
-		    cylinder(thick, r=20/2);
-		    translate([b_offset, y_hole_space, 0]) {
-			 cylinder(thick, r=15/2);
-		    };
-	       };
-	       hull() {
-		    cylinder(thick, r=20/2);
-		    translate([-b_offset, y_hole_space, 0]) {
-			 cylinder(thick, r=15/2);
-		    };
-	       };
-	  };
-
-	  translate([0, 0, -0.5]) {
-	       translate([b_offset, y_hole_space, 0]) {
-		    cylinder(thick+1, r=6.5/2);
-	       };
-	       translate([-b_offset, y_hole_space, 0]) {
-		    cylinder(thick+1, r=6.5/2);
-	       };
-	       cylinder(thick+1, r=10/2);
-
-
-	       hull() {
-		    small_r = (44 - 26) / 2;
-		    translate([0, 29, 0]) {
-			 cylinder(thick+1, r=small_r);
-		    };
-		    translate([0, 58, 0]) {
-			 cylinder(thick+1, r=32/2);
-		    };
-	       };
-	  };
-     };
-}
-
-
-module gauge_plug(height=23, thread=13) {
      stub = height - thread;
 
      color("Gold") {
@@ -75,6 +31,10 @@ module gauge_plug(height=23, thread=13) {
 
 
 module mini_gauge(bracket=false, $fn=50) {
+     /*
+       Basic representation of the 2.5" DCC Mini Gauges
+     */
+
      rim_r = 67 / 2;
      rim_h = 10.5;
 
@@ -131,7 +91,7 @@ module mini_gauge(bracket=false, $fn=50) {
 	       };
 
 	       translate([0, 0, -plug_height]) {
-		    gauge_plug(height=plug_height, thread=plug_thread);
+		    gauge_cable_plug(height=plug_height, thread=plug_thread);
 	       };
 	  };
 
@@ -163,7 +123,7 @@ module mini_gauge(bracket=false, $fn=50) {
 }
 
 
-mini_gauge(bracket=true);
+mini_gauge(bracket=false);
 
 
 // The end.
