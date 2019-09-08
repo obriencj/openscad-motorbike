@@ -50,7 +50,8 @@ module mini_gauge(bracket=false, $fn=50) {
      bolt_lost_r = 9 / 2;
      bolt_lost_l = 6;
 
-     rim_brim = 4.5;
+     // the inset glass face
+     rim_brim = 4.5;  // how
      face_r = rim_r - rim_brim;
      face_inset = 3;
 
@@ -122,6 +123,7 @@ module mini_gauge(bracket=false, $fn=50) {
 	  };
      };
 }
+
 
 
 mini_gauge(bracket=false);
