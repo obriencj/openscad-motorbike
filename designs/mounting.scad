@@ -95,12 +95,15 @@ module gt250_mounting($fn=100) {
      pin_distance = 90;
      y_hole_space = 50;
 
+     ignition_hole_r = 20;
+     ignition_offset = ignition_hole_r - 8;
+
      difference() {
 	  bracket_body(b_thick, pin_distance);
 
 	  // subtract a cyl for the bottom of the ignition key
-	  translate([0, 10, -0.5]) {
-	       cylinder(b_thick + 1, r=14);
+	  translate([0, ignition_offset, -0.5]) {
+	       cylinder(b_thick + 1, r=ignition_hole_r);
 	  };
 
 	  // subtract a hole for the mounting barrels
@@ -119,8 +122,8 @@ module gt250_mounting($fn=100) {
      };
 
      // the ignition barrel
-     translate([0, 10, b_thick]) {
-	  mount_barrel(16, 15, 14);
+     translate([0, ignition_offset, b_thick]) {
+	  mount_barrel(ignition_hole_r + 2, 15, ignition_hole_r);
      };
 }
 
