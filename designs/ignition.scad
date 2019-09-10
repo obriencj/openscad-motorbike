@@ -22,14 +22,35 @@ module crosscut(height, crossthick, inner_r, outer_r, $fn=100) {
 }
 
 
-module ignition(with_cap=false, $fn=100) {
+module gt250_ignition_crosscut() {
+     rotate([0, 0, 5]) {
+	  crosscut(10.1, 8, inner_r=9.5, outer_r=15);
+     };
+}
+
+
+
+module gt250_ignition_crosscut_i(r=16, $fn=100) {
+     rotate([0, 0, 5]) {
+	  difference() {
+	       cylinder(10.1, r=r);
+	       translate([0, 0, -0.5]) {
+		    crosscut(11.1, 8, 10, 15);
+	       }
+	  };
+     };
+}
+
+
+module gt250_ignition(with_cap=false, $fn=100) {
 
      color("Silver") {
 	  cylinder(19, r=(35.1 / 2));
 	  translate([0, 0, 19]) {
-	       crosscut(10.1, 8, inner_r=9, outer_r=15);
+	       gt250_ignition_crosscut();
 	  };
      };
+
      translate([0, 0, 19+10.1]) {
 	  difference() {
 	       union() {
@@ -78,7 +99,7 @@ module ignition(with_cap=false, $fn=100) {
 }
 
 
-ignition(true);
+gt250_ignition(true);
 
 
 // The end.
