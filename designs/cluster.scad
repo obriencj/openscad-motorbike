@@ -22,7 +22,6 @@ module gt250_mini_cluster() {
 }
 
 
-
 gt250_mini_cluster();
 
 
