@@ -7,6 +7,14 @@
 use <common.scad>;
 
 
+function gt250_crosscut_inner_r() = 9.5;
+function gt250_crosscut_outer_r() = 15;
+function gt250_crosscut_height() = 9;
+function gt250_crosscut_thick() = 8;
+
+function gt250_crosscut_angle() = 6;
+
+
 module crosscut(height, crossthick, inner_r, outer_r, $fn=100) {
      linear_extrude(height) {
 	  intersection() {
@@ -23,20 +31,28 @@ module crosscut(height, crossthick, inner_r, outer_r, $fn=100) {
 
 
 module gt250_ignition_crosscut() {
-     rotate([0, 0, 5]) {
-	  crosscut(10.1, 8, inner_r=9.5, outer_r=15);
+     rotate([0, 0, gt250_crosscut_angle()]) {
+	  crosscut(gt250_crosscut_height(),
+		   gt250_crosscut_thich(),
+		   gt250_crosscut_inner_r(),
+		   gt250_crosscut_outer_r());
      };
 }
 
 
-
 module gt250_ignition_crosscut_i(r=16, $fn=100) {
-     rotate([0, 0, 5]) {
+     rotate([0, 0, gt250_crosscut_angle()]) {
 	  difference() {
-	       cylinder(10.1, r=r);
+	       cylinder(gt250_crosscut_height(), r=r);
 	       translate([0, 0, -0.5]) {
-		    crosscut(11.1, 8, 10, 15);
-	       }
+		    // because the ignition slides in from below, the
+		    // crosscut cannot be smaller than the threaded
+		    // segment that would be above it
+		    crosscut(gt250_crosscut_height() + 1,
+			     gt250_crosscut_thick() + 0.25,
+			     12.25,
+			     gt250_crosscut_outer_r() + 0.25);
+	       };
 	  };
      };
 }
@@ -51,7 +67,7 @@ module gt250_ignition(with_cap=false, $fn=100) {
 	  };
      };
 
-     translate([0, 0, 19+10.1]) {
+     translate([0, 0, 19 + gt250_crosscut_height()]) {
 	  difference() {
 	       union() {
 		    color("Silver") {
@@ -85,7 +101,7 @@ module gt250_ignition(with_cap=false, $fn=100) {
      };
 
      if (with_cap) {
-	  translate([0, 0, 19 + 10.1 + 2]) {
+	  translate([0, 0, 19 + gt250_crosscut_height() + 2]) {
 	       color("Gray") {
 		    linear_extrude(8.25) {
 			 difference() {
