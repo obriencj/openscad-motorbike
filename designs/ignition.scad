@@ -12,7 +12,7 @@ function gt250_crosscut_outer_r() = 15;
 function gt250_crosscut_height() = 9;
 function gt250_crosscut_thick() = 8;
 
-function gt250_crosscut_angle() = 6;
+function gt250_crosscut_angle() = 8;
 
 
 module crosscut(height, crossthick, inner_r, outer_r, $fn=100) {
@@ -33,7 +33,7 @@ module crosscut(height, crossthick, inner_r, outer_r, $fn=100) {
 module gt250_ignition_crosscut() {
      rotate([0, 0, gt250_crosscut_angle()]) {
 	  crosscut(gt250_crosscut_height(),
-		   gt250_crosscut_thich(),
+		   gt250_crosscut_thick(),
 		   gt250_crosscut_inner_r(),
 		   gt250_crosscut_outer_r());
      };

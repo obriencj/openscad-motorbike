@@ -8,14 +8,20 @@ use <mounting.scad>;
 
 module gt250_mini_cluster() {
 
-     gt250_mounting();
+     y_hole_space = 48;
 
-     translate([0, 12, -10]) {
-	  ignition(true);
+     gt250_gauge_bottom();
+
+     translate([0, 0, 21]) {
+	  gt250_gauge_top();
+     };
+
+     translate([0, 0, -7]) {
+	  gt250_ignition(false);
      };
 
      duplicate(move_v=[-90, 0, 0]) {
-	  translate([45, 50, 8]) {
+	  translate([45, y_hole_space, 8]) {
 	       mini_gauge();
 	  };
      };

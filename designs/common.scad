@@ -14,7 +14,7 @@ module duplicate(move_v=[0,0,0], rotate_v=[0,0,0]) {
 }
 
 
-module copy_mirror(v) {
+module copy_mirror(v=[1, 0, 0]) {
      children();
      mirror(v) children();
 }
