@@ -78,15 +78,7 @@ function tangent(p1, p2) =
      [[xa, ya], [xb, yb]];
 
 
-module rounded_polygon(points, $fn=100) {
-     /*
-       each point in points is a vector of [x, y, r] where r is
-       positive to indicate that it is an interior point, and negative
-       to indicate it is an exterior point.
-
-       adapted from
-       http://forum.openscad.org/Script-to-replicate-hull-and-minkoswki-for-CSG-export-import-into-FreeCAD-td16537.html#a16556
-     */
+module _rounded_polygon(points, $fn=100) {
 
      p_len = len(points);
 
@@ -108,7 +100,7 @@ module rounded_polygon(points, $fn=100) {
 	  polygon([for(i = [0: p_len - 1]) for(e = p_tang(i)) e]);
 
 	  // then subtract all the negative radius circles
-	  #for(p = points) {
+	  for(p = points) {
 	       if(p[2] < 0) {
 		    translate([p[0], p[1]]) {
 			 circle(r=-p[2]);
@@ -116,6 +108,24 @@ module rounded_polygon(points, $fn=100) {
 	       };
 	  };
      };
+};
+
+
+module rounded_polygon(points, thick=0, $fn=100) {
+     /*
+       each point in points is a vector of [x, y, r] where r is
+       positive to indicate that it is an interior point, and negative
+       to indicate it is an exterior point.
+
+       adapted from
+       http://forum.openscad.org/Script-to-replicate-hull-and-minkoswki-for-CSG-export-import-into-FreeCAD-td16537.html#a16556
+     */
+
+     if(thick > 0) {
+	  linear_extrude(thick) _rounded_polygon(points, $fn);
+     } else {
+	  _rounded_polygon(points, $fn);
+     }
 };
 
 

@@ -36,7 +36,7 @@ module stubs(stubs_r) {
 	  copy_rotate(z=180) {
 	       copy_rotate(z=stub_degree * 2) {
 		    rotate([0, 0, -stub_degree]) {
-			 translate([stubs_r - stub_l, -stub_w / 2, 0]) {
+			 translate([stubs_r - stub_l, -stub_w / 2]) {
 			      square([stub_l, stub_w]);
 			 };
 		    };
@@ -46,158 +46,129 @@ module stubs(stubs_r) {
 }
 
 
-module half_circle(r, $fn=100) {
-     difference() {
-	  circle(r=r);
-	  translate([-r, 0, 0]) {
-	       square([r * 2, r]);
-	  };
-     };
-}
-
-
 module gt250_gauge_bottom($fn=100) {
 
+     // the thickness of the thin parts inside the cups
+     thin_thick = 2.1;
+
+     // the thickness of the rest of the base
+     base_thick = 4;
+
+     // the height of the mounting barrels
      height = 16;
 
-     thick = 2.1;
-     b_thick = 5;
+     // total height of the part, base plus pin and cup height
+     total_height = height + base_thick;
 
-     total_height = height + b_thick;
-
+     // total space between the centers of the mounting pins
      pin_distance = 90;
-     y_hole_space = 48;
+
+     // distance on Y axis to shift the gauge cups (measured from the
+     // mounting pins)
+     cup_offset = 48;
+
+     // how thick the cup walls should be
+     cup_wall_thick = 2;
+
+     // interior radius of the gauge cups. Diameter of the DCC
+     // mini-gauge is 61mm, so add a little bit of space
+     cup_inner_r = 62 / 2;
+     cup_outer_r = cup_inner_r + cup_wall_thick;
 
      ignition_hole_r = 20;
-     ignition_offset = 0;
+     ignition_r = ignition_hole_r + cup_wall_thick;
+     ignition_offset = 4;
 
-     inner_circle_r = (14 + y_hole_space) / 2;
-     outer_circle_r = inner_circle_r + 2;
+     pin_spacing = 12;
 
+     base_poly = [
+	  [0, ignition_offset, ignition_r],
+	  [-pin_distance / 2, 0, pin_spacing],
+	  [-pin_distance / 2, cup_offset, cup_outer_r],
+	  [0, cup_offset, -((pin_distance / 2) - cup_outer_r)],
+	  [pin_distance / 2, cup_offset, cup_outer_r],
+	  [pin_distance / 2, 0, pin_spacing],
+	  ];
 
-     // 1. start with the initial bottom
-     // 2. create a major curved body
-     // 3. poke various holes in it
-     // 4. add the mounting barrels
+     tall_poly = [
+	  [0, ignition_offset, ignition_r],
+	  // [-(ignition_r + 10), (cup_offset - cup_outer_r) - 10, -10],
+	  [-pin_distance / 2, 0, -pin_spacing],
+	  [-pin_distance / 2, cup_offset, cup_outer_r],
+	  [0, cup_offset, -((pin_distance / 2) - cup_outer_r)],
+	  [pin_distance / 2, cup_offset, cup_outer_r],
+	  // [(ignition_r + 10), (cup_offset - cup_outer_r) - 10, -10],
+	  [pin_distance / 2, 0, -pin_spacing],
+	  ];
 
      difference() {
 	  union() {
-	       linear_extrude(b_thick) {
-		    copy_translate(x=-pin_distance) {
-			 translate([pin_distance / 2, 0, 0]) {
-			      hull() {
-				   circle(r=10);
-				   translate([0, y_hole_space, 0]) {
-					circle(r=outer_circle_r);
-				   };
-			      };
-			 };
-		    };
-
-		    // fill in some empty space between cups
-		    hull() {
-			 copy_translate(x=-pin_distance) {
-			      translate([pin_distance / 2, 0, 0]) {
-				   circle(r=10);
-			      };
-			 };
-			 translate([0, ignition_offset, 0]) {
-			      circle(r=ignition_hole_r+2);
-			 };
-		    };
-	       };
-
-	       linear_extrude(total_height) {
-		    copy_mirror() {
-			 difference() {
-			      union() {
-				   square([pin_distance / 2, y_hole_space]);
-
-				   translate([pin_distance / 2, y_hole_space, 0]) {
-					circle(r=outer_circle_r);
-				   };
-
-				   hull() {
-					translate([pin_distance / 2, y_hole_space, 0]) {
-					     half_circle(r=outer_circle_r);
-					     translate([0, ignition_offset, 0]) {
-						  circle(r=ignition_hole_r+2);
-					     };
-					};
-				   };
-			      };
-
-			      translate([pin_distance / 2, 0, 0]) {
-				   resize([0, (y_hole_space - outer_circle_r) * 2, 0]) {
-					circle(r=(pin_distance / 2) - (ignition_hole_r + 2));
-				   };
-			      };
-			 };
-		    };
+	       rounded_polygon(base_poly, thick=base_thick, $fn=$fn);
+	       translate([0, 0, base_thick]) {
+		    rounded_polygon(tall_poly, thick=height, $fn=$fn);
 	       };
 	  };
 
-	  // then we subtract some of it to make it thinner for the
-	  // gauge mounting segments, since space is limited there.
-	  translate([0, 0, thick]) {
-	       linear_extrude(total_height + 1) {
-		    duplicate(move_v=[-pin_distance, 0, 0]) {
-			 translate([pin_distance / 2, 0, 0]) {
-			      translate([0, y_hole_space, 0]) {
-				   circle(r=inner_circle_r);
-			      };
+	  copy_translate(x=-pin_distance) {
+	       // subtract the interior cup volume
+	       translate([pin_distance / 2, cup_offset, thin_thick]) {
+		    render() {
+			 translate([0, 0, 4]) {
+			      cylinder(total_height, r=cup_inner_r);
 			 };
+			 cylinder(4, cup_inner_r - 4, cup_inner_r);
 		    };
+	       };
+
+	       // subtract the holes from the bottom of the cup
+	       translate([pin_distance / 2, 0, 0]) {
+		    v_bracket_holes(y_hole_space=cup_offset,
+				    thick=base_thick,
+				    bottom_hole_r=3);
 	       };
 	  };
 
-	  // subtract a cyl between the gauges to produce a nice
-	  // rounded look
-	  translate([0, y_hole_space, -0.5]) {
-	       cylinder(total_height + 1,
-			r=(pin_distance / 2)-outer_circle_r);
-	  };
-
-	  // subtract a cyl for the bottom of the ignition key
+	  // hole for the ignition
 	  translate([0, ignition_offset, -0.5]) {
 	       cylinder(total_height + 1, r=ignition_hole_r);
 	  };
 
-	  // subtract a hole for the mounting barrels
-	  duplicate(move_v=[-pin_distance, 0, 0]) {
-	       translate([pin_distance / 2, 0, 0]) {
-		    v_bracket_holes(y_hole_space=y_hole_space,
-				    thick=b_thick, bottom_hole_r=3);
-	       };
-	  };
-     };
-
-     // the mounting barrels for the tripple tree
-     duplicate(move_v=[-pin_distance, 0, 0]) {
-	  translate([pin_distance / 2, 0, b_thick]) {
-
-	       // the barrel itself
-	       barrel(4, height, 3);
-
-	       // the cups for the gauges
-	       translate([0, y_hole_space, thick - b_thick]) {
-		    stubs(inner_circle_r);
-	       };
-	  };
-     };
-
-     // the ignition barrel
-     translate([0, ignition_offset, b_thick]) {
-	  translate([0, 0, height - gt250_crosscut_height()]) {
-	       gt250_ignition_crosscut_i(ignition_hole_r+2);
-	  };
-	  barrel(ignition_hole_r + 2, height, ignition_hole_r);
-	  copy_rotate(z=90) {
-	       rotate([0, 0, 45]) {
-		    translate([ignition_hole_r + 1, 0, 0]) {
-			 translate([0, -1, 0]) cube([13, 2, height]);
+	  // decoration on bottom of cups
+	  copy_translate(x=-pin_distance) {
+	       translate([pin_distance / 2, cup_offset - 4, 0]) {
+		    rotate_extrude(angle=180) {
+			 translate([cup_outer_r + 6, 0, 0]) {
+			      circle(5, $fn=4);
+			 };
 		    };
 	       };
+	  };
+     };
+
+     copy_translate(x=-pin_distance) {
+	  translate([pin_distance / 2, 0, base_thick]) {
+	       // the mounting barrels
+	       barrel(4, height, 3);
+
+	       // the stubs inside the gauge cups
+	       translate([0, cup_offset, thin_thick - base_thick]) {
+		    stubs(cup_inner_r);
+	       };
+
+	       // decoration on top of cups
+	       translate([0, cup_offset, height]) {
+		    intersection() {
+			 barrel(cup_outer_r, 4, cup_inner_r);
+			 cylinder(5, cup_outer_r, cup_outer_r - 1);
+		    };
+	       };
+	  };
+     };
+
+     // the ignition cutout re-inserted into the hole
+     translate([0, ignition_offset, base_thick]) {
+	  translate([0, 0, height - gt250_crosscut_height()]) {
+	       gt250_ignition_crosscut_i(ignition_r);
 	  };
      };
 }
@@ -205,158 +176,71 @@ module gt250_gauge_bottom($fn=100) {
 
 module gt250_gauge_top($fn=100) {
 
-     thick = 2.2;
-     b_thick = 5;
+     thin_thick = 2.1;
+     base_thick = 5;
+
+     cup_wall_thick = 2;
 
      pin_distance = 90;
+     pin_spacing = 12;
 
      ignition_hole_r = 20;
-     ignition_offset = 0;
+     ignition_r = ignition_hole_r + cup_wall_thick;
+     ignition_offset = 4;
+
+     keycap_ir = 25 / 2;
+     keycap_or = 32 / 2;
 
      difference() {
-	  linear_extrude(b_thick) {
-	       difference() {
-		    hull() {
-			 circle(r=ignition_hole_r + 2);
-			 copy_translate(x=-pin_distance) {
-			      translate([pin_distance / 2, 0, 0]) {
-				   circle(r=10);
-			      };
+	  linear_extrude(base_thick) {
+	       hull() {
+		    translate([0, ignition_offset]) {
+			 circle(r=ignition_r);
+		    };
+		    copy_translate(x=-pin_distance) {
+			 translate([pin_distance / 2, 0]) {
+			      circle(r=pin_spacing);
 			 };
 		    };
-		    circle(r=13);
+	       };
+	  };
+
+	  // holes
+	  translate([0, 0, -0.5]) {
+	       linear_extrude(base_thick + 1) {
+		    translate([0, ignition_offset]) {
+			 circle(r=keycap_ir);
+		    };
 		    copy_translate(x=-pin_distance) {
-			 translate([pin_distance / 2, 0, 0]) {
+			 translate([pin_distance / 2, 0]) {
 			      circle(r=3);
 			 };
 		    };
 	       };
 	  };
 
-	  translate([0, 0, thick]) {
-	       linear_extrude(b_thick) {
-		    circle(r=32 /2);
-		    copy_translate(x=-pin_distance) {
-			 translate([pin_distance / 2, 0, 0]) {
-			      circle(r=8);
-			 };
-		    };
-	       };
-	  };
-     };
-}
-
-
-module gt250_gauge_prototype_3($fn=100) {
-
-     height = 16;
-
-     thick = 2.1;
-     b_thick = 5;
-
-     pin_distance = 90;
-     y_hole_space = 48;
-
-     ignition_hole_r = 20;
-     ignition_offset = 0;
-
-     inner_circle_r = (14 + y_hole_space) / 2;
-     outer_circle_r = inner_circle_r + 2;
-
-     difference() {
-	  // the general overall shape, extruded double-thick
-	  linear_extrude(b_thick) {
-	       copy_translate(x=-pin_distance) {
-		    translate([pin_distance / 2, 0, 0]) {
-			 hull() {
-			      circle(r=10);
-			      translate([0, y_hole_space, 0]) {
-				   circle(r=outer_circle_r);
-			      };
-			 };
-		    };
-	       };
-
-	       // fill in some empty space between cups
-	       hull() {
-		    translate([-pin_distance/2, -10, 0]) {
-			 square([pin_distance, y_hole_space + 10]);
+	  // insets
+	  translate([0, 0, thin_thick]) {
+	       linear_extrude(base_thick) {
+		    translate([0, ignition_offset]) {
+			 circle(r=keycap_or);
 		    };
 		    copy_translate(x=-pin_distance) {
-			 translate([pin_distance / 2, 0, 0]) {
-			      circle(r=10);
+			 translate([pin_distance / 2, 0]) {
+			      circle(r=7);
 			 };
-		    };
-		    translate([0, ignition_offset, 0]) {
-			 circle(r=ignition_hole_r+2);
-		    };
-	       }
-	  };
-
-	  // then we subtract some of it to make it thinner for the
-	  // gauge mounting segments, since space is limited there.
-	  translate([0, 0, thick]) {
-	       linear_extrude(thick + 1) {
-		    duplicate(move_v=[-pin_distance, 0, 0]) {
-			 translate([pin_distance / 2, 0, 0]) {
-			      translate([0, y_hole_space, 0]) {
-				   circle(r=inner_circle_r);
-			      };
-			 };
-		    };
-	       };
-	  };
-
-	  // subtract a cyl between the gauges to produce a nice
-	  // rounded look
-	  translate([0, y_hole_space, -0.5]) {
-	       cylinder(b_thick + 1,
-			r=(pin_distance / 2)-outer_circle_r);
-	  };
-
-	  // subtract a cyl for the bottom of the ignition key
-	  translate([0, ignition_offset, -0.5]) {
-	       cylinder(b_thick + 1, r=ignition_hole_r);
-	  };
-
-	  // subtract a hole for the mounting barrels
-	  duplicate(move_v=[-pin_distance, 0, 0]) {
-	       translate([pin_distance / 2, 0, 0]) {
-		    v_bracket_holes(y_hole_space=y_hole_space,
-				    thick=b_thick, bottom_hole_r=3);
-	       };
-	  };
-     };
-
-     duplicate(move_v=[-pin_distance, 0, 0]) {
-	  translate([pin_distance / 2, 0, b_thick]) {
-
-	       // the mounting barrels for the tripple tree
-	       barrel(4, height, 3);
-
-	       // the cups for the gauges
-	       translate([0, y_hole_space, 0]) {
-		    barrel(outer_circle_r, height, inner_circle_r);
-
-		    translate([0, 0, thick - b_thick]) {
-			 stubs(inner_circle_r);
 		    };
 	       };
 	  };
      };
 
-     // the ignition barrel
-     translate([0, ignition_offset, b_thick]) {
-	  translate([0, 0, height - gt250_crosscut_height()]) {
-	       gt250_ignition_crosscut_i(ignition_hole_r+2);
-	  };
-	  barrel(ignition_hole_r + 2, height, ignition_hole_r);
-	  copy_rotate(z=90) {
-	       rotate([0, 0, 45]) {
-		    translate([ignition_hole_r + 1, 0, 0]) {
-			 translate([0, -1, 0]) cube([13, 2, height]);
-		    };
-	       };
+     translate([0, ignition_offset, base_thick]) {
+	  barrel(ignition_r, 1, keycap_or);
+     };
+
+     copy_translate(x=-pin_distance) {
+	  translate([pin_distance / 2, 0, base_thick]) {
+	       barrel(pin_spacing, 1, 7);
 	  };
      };
 }

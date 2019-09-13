@@ -41,10 +41,11 @@ module gt250_ignition_crosscut() {
 
 
 module gt250_ignition_crosscut_i(r=16, $fn=100) {
-     rotate([0, 0, gt250_crosscut_angle()]) {
-	  difference() {
-	       cylinder(gt250_crosscut_height(), r=r);
-	       translate([0, 0, -0.5]) {
+     difference() {
+	  cylinder(gt250_crosscut_height(), r=r);
+	  translate([0, 0, -0.5]) {
+	       rotate([0, 0, gt250_crosscut_angle()]) {
+
 		    // because the ignition slides in from below, the
 		    // crosscut cannot be smaller than the threaded
 		    // segment that would be above it
