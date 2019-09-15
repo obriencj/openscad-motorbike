@@ -36,7 +36,7 @@ module AG_401() {
 
      // todo: the terminal positions and sizes are estimations
      color("Gold") {
-	  duplicate(rotate_v=[0, 0, 180]) {
+	  copy_rotate(z=180) {
 	       translate([40, 0, bat_height])
 		    cylinder(2, 8, 7);
 	  };

@@ -20,7 +20,7 @@ module crosscut(height, crossthick, inner_r, outer_r, $fn=100) {
 	  intersection() {
 	       union() {
 		    circle(r=inner_r);
-		    duplicate(rotate_v=[0, 0, 90]) {
+		    copy_rotate(z=90) {
 			 square([outer_r * 2, crossthick], center=true);
 		    };
 	       };

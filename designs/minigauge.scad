@@ -72,7 +72,7 @@ module mini_gauge(bracket=false, $fn=50) {
 	       };
 
 	       // bolts
-	       duplicate(rotate_v=[0, 0, 180]) {
+	       copy_rotate(z=180) {
 		    // the overall length of the bolt from the
 		    // body
 		    color("Gold") {
@@ -114,7 +114,7 @@ module mini_gauge(bracket=false, $fn=50) {
 	  bracket_bolt_l = 4.8;
 	  bracket_bolt_down = bracket_down + bracket_bolt_l;
 
-	  duplicate(rotate_v=[0, 0, 180]) {
+	  copy_rotate(z=180) {
 	       color("Silver") {
 		    translate([bolt_offset, 0, -bracket_bolt_down]) {
 			 cylinder(bracket_bolt_l, r=bolt_lost_r, $fn=6);

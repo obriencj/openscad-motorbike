@@ -23,7 +23,7 @@ module gt250_mini_cluster() {
 	  gt250_ignition(false);
      };
 
-     duplicate(move_v=[-pin_distance, 0, 0]) {
+     copy_translate(-pin_distance) {
 	  translate([pin_distance / 2, cup_offset, 8]) {
 	       mini_gauge();
 	  };

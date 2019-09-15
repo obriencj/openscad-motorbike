@@ -4,16 +4,6 @@
 */
 
 
-module duplicate(move_v=[0,0,0], rotate_v=[0,0,0]) {
-     children();
-     translate(move_v) {
-          rotate(rotate_v) {
-               children();
-          };
-     };
-}
-
-
 module copy_mirror(v=[1, 0, 0]) {
      children();
      mirror(v) children();
@@ -58,38 +48,33 @@ module barrel(barrel_r, barrel_h, bore_r, $fn=100) {
 }
 
 
+module _rounded_polygon(points, $fn=100) {
 /*
   each point is [x, y, r] of a circle
 
   adapted from
   http://forum.openscad.org/Script-to-replicate-hull-and-minkoswki-for-CSG-export-import-into-FreeCAD-td16537.html#a16556
 */
-function tangent(p1, p2) =
-     let(r1 = p1[2],
-	 r2 = p2[2],
-	 dx = p2.x - p1.x,
-	 dy = p2.y - p1.y,
-	 d = sqrt(dx * dx + dy * dy),
-	 theta = atan2(dy, dx) + acos((r1 - r2) / d),
-	 xa = p1.x + (cos(theta) * r1),
-	 ya = p1.y + (sin(theta) * r1),
-	 xb = p2.x + (cos(theta) * r2),
-	 yb = p2.y + (sin(theta) * r2))
-     [[xa, ya], [xb, yb]];
-
-
-module _rounded_polygon(points, $fn=100) {
 
      p_len = len(points);
 
-     function p_tang(i) = tangent(points[i],
-				  points[(i + 1) % p_len]);
+     function p_tang(index) =
+	  let(p1 = points[index],
+	      p2 = points[(index + 1) % p_len],
+	      r1 = p1[2],
+	      r2 = p2[2],
+	      dx = p2.x - p1.x,
+	      dy = p2.y - p1.y,
+	      d = sqrt(dx * dx + dy * dy),
+	      theta = atan2(dy, dx) + acos((r1 - r2) / d))
+	  [[p1.x + (cos(theta) * r1), p1.y + (sin(theta) * r1)],
+	   [p2.x + (cos(theta) * r2), p2.y + (sin(theta) * r2)]];
 
      // all the positive radius circles
      for(p = points) {
 	  if(p[2] > 0) {
 	       translate([p[0], p[1]]) {
-		    circle(r=p[2]);
+		    circle(p[2]);
 	       };
 	  };
      };
@@ -103,12 +88,12 @@ module _rounded_polygon(points, $fn=100) {
 	  for(p = points) {
 	       if(p[2] < 0) {
 		    translate([p[0], p[1]]) {
-			 circle(r=-p[2]);
+			 circle(-p[2]);
 		    };
 	       };
 	  };
      };
-};
+}
 
 
 module rounded_polygon(points, thick=0, $fn=100) {
@@ -116,9 +101,6 @@ module rounded_polygon(points, thick=0, $fn=100) {
        each point in points is a vector of [x, y, r] where r is
        positive to indicate that it is an interior point, and negative
        to indicate it is an exterior point.
-
-       adapted from
-       http://forum.openscad.org/Script-to-replicate-hull-and-minkoswki-for-CSG-export-import-into-FreeCAD-td16537.html#a16556
      */
 
      if(thick > 0) {
@@ -126,7 +108,7 @@ module rounded_polygon(points, thick=0, $fn=100) {
      } else {
 	  _rounded_polygon(points, $fn);
      }
-};
+}
 
 
 module rounded_plate(width, height, thickness, turn_r=5.1, $fn=50) {
