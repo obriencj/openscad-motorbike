@@ -72,22 +72,24 @@ module gt250_gauge_bottom($fn=100) {
 
      // interior radius of the gauge cups. Diameter of the DCC
      // mini-gauge is 61mm, so add a little bit of space
-     cup_inner_r = 62 / 2;
+     cup_inner_r = 61 / 2;
      cup_outer_r = cup_inner_r + cup_wall_thick;
 
      ignition_hole_r = 20;
      ignition_r = ignition_hole_r + cup_wall_thick;
      ignition_offset = 4;
 
+     pin_bumper_r = 21 / 2;
      pin_spacing = 15;
+     pin_bolt_r = 3;
 
      base_poly = [
 	  [0, ignition_offset, ignition_r],
-	  [-pin_distance / 2, 0, pin_spacing],
+	  [-pin_distance / 2, 0, pin_bumper_r],
 	  [-pin_distance / 2, cup_offset, cup_outer_r],
 	  [0, cup_offset, -((pin_distance / 2) - cup_outer_r)],
 	  [pin_distance / 2, cup_offset, cup_outer_r],
-	  [pin_distance / 2, 0, pin_spacing],
+	  [pin_distance / 2, 0, pin_bumper_r],
 	  ];
 
      tall_poly = [
@@ -124,7 +126,7 @@ module gt250_gauge_bottom($fn=100) {
 	       translate([pin_distance / 2, 0, 0]) {
 		    v_bracket_holes(y_hole_space=cup_offset,
 				    thick=base_thick,
-				    bottom_hole_r=3);
+				    bottom_hole_r=pin_bolt_r);
 	       };
 	  };
 
@@ -137,7 +139,7 @@ module gt250_gauge_bottom($fn=100) {
      copy_translate(x=-pin_distance) {
 	  translate([pin_distance / 2, 0, base_thick]) {
 	       // the mounting barrels
-	       barrel(4, height, 3);
+	       barrel(4, height, pin_bolt_r);
 
 	       // the triple-tree mounting, for visual check of clearance
 	       %barrel(26 / 2, height, 4);
@@ -151,7 +153,8 @@ module gt250_gauge_bottom($fn=100) {
 	       translate([0, cup_offset, height]) {
 		    intersection() {
 			 barrel(cup_outer_r, 2, cup_inner_r);
-			 cylinder(3, cup_outer_r, cup_outer_r - 1.5);
+			 cylinder(cup_wall_thick + 1,
+				  cup_outer_r, cup_outer_r - 1.5);
 		    };
 	       };
 	  };
@@ -174,7 +177,7 @@ module gt250_gauge_top($fn=100) {
      cup_wall_thick = 2;
 
      pin_distance = 90;
-     pin_spacing = 12;
+     pin_bumper_r = 21 / 2;
 
      ignition_hole_r = 20;
      ignition_r = ignition_hole_r + cup_wall_thick;
@@ -182,6 +185,9 @@ module gt250_gauge_top($fn=100) {
 
      keycap_ir = 25 / 2;
      keycap_or = 32 / 2;
+
+     pin_bolt_r = 3;
+     pin_washer_r = 7;
 
      difference() {
 	  linear_extrude(base_thick) {
@@ -191,7 +197,7 @@ module gt250_gauge_top($fn=100) {
 		    };
 		    copy_translate(x=-pin_distance) {
 			 translate([pin_distance / 2, 0]) {
-			      circle(r=pin_spacing);
+			      circle(pin_bumper_r);
 			 };
 		    };
 	       };
@@ -205,7 +211,7 @@ module gt250_gauge_top($fn=100) {
 		    };
 		    copy_translate(x=-pin_distance) {
 			 translate([pin_distance / 2, 0]) {
-			      circle(r=3);
+			      circle(pin_bolt_r);
 			 };
 		    };
 	       };
@@ -219,7 +225,7 @@ module gt250_gauge_top($fn=100) {
 		    };
 		    copy_translate(x=-pin_distance) {
 			 translate([pin_distance / 2, 0]) {
-			      circle(r=7);
+			      circle(pin_washer_r);
 			 };
 		    };
 	       };
@@ -232,7 +238,7 @@ module gt250_gauge_top($fn=100) {
 
      copy_translate(x=-pin_distance) {
 	  translate([pin_distance / 2, 0, base_thick]) {
-	       barrel(pin_spacing, 1, 7);
+	       barrel(pin_bumper_r, 1, pin_washer_r);
 	  };
      };
 }
