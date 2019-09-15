@@ -79,7 +79,7 @@ module gt250_gauge_bottom($fn=100) {
      ignition_r = ignition_hole_r + cup_wall_thick;
      ignition_offset = 4;
 
-     pin_spacing = 12;
+     pin_spacing = 15;
 
      base_poly = [
 	  [0, ignition_offset, ignition_r],
@@ -132,23 +132,15 @@ module gt250_gauge_bottom($fn=100) {
 	  translate([0, ignition_offset, -0.5]) {
 	       cylinder(total_height + 1, r=ignition_hole_r);
 	  };
-
-	  // decoration on bottom of cups
-	  copy_translate(x=-pin_distance) {
-	       translate([pin_distance / 2, cup_offset - 4, 0]) {
-		    rotate_extrude(angle=180) {
-			 translate([cup_outer_r + 6, 0, 0]) {
-			      circle(5, $fn=4);
-			 };
-		    };
-	       };
-	  };
      };
 
      copy_translate(x=-pin_distance) {
 	  translate([pin_distance / 2, 0, base_thick]) {
 	       // the mounting barrels
 	       barrel(4, height, 3);
+
+	       // the triple-tree mounting, for visual check of clearance
+	       %barrel(26 / 2, height, 4);
 
 	       // the stubs inside the gauge cups
 	       translate([0, cup_offset, thin_thick - base_thick]) {
@@ -158,8 +150,8 @@ module gt250_gauge_bottom($fn=100) {
 	       // decoration on top of cups
 	       translate([0, cup_offset, height]) {
 		    intersection() {
-			 barrel(cup_outer_r, 4, cup_inner_r);
-			 cylinder(5, cup_outer_r, cup_outer_r - 1);
+			 barrel(cup_outer_r, 2, cup_inner_r);
+			 cylinder(3, cup_outer_r, cup_outer_r - 1.5);
 		    };
 	       };
 	  };

@@ -12,7 +12,7 @@ function gt250_crosscut_outer_r() = 15;
 function gt250_crosscut_height() = 9;
 function gt250_crosscut_thick() = 8;
 
-function gt250_crosscut_angle() = 8;
+function gt250_crosscut_angle() = 5;
 
 
 module crosscut(height, crossthick, inner_r, outer_r, $fn=100) {
