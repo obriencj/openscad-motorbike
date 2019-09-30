@@ -28,16 +28,6 @@ module copy_rotate(x=0, y=0, z=0, copies=1) {
 }
 
 
-module double_sided(y_axis, z_thickness) {
-     translate([0, 0, z_thickness / 2]) {
-          duplicate(move_v=[0, y_axis, 0],
-                    rotate_v=[180, 0, 0]) {
-               children();
-          };
-     };
-}
-
-
 module barrel(barrel_r, barrel_h, bore_r, $fn=100) {
      linear_extrude(barrel_h) {
 	  difference() {
