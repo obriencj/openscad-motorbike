@@ -4,7 +4,7 @@
 */
 
 
-use <common.scad>;
+use <../utils/copies.scad>;
 use <vbracket.scad>;
 
 
@@ -123,7 +123,6 @@ module mini_gauge(bracket=false, $fn=50) {
 	  };
      };
 }
-
 
 
 mini_gauge(bracket=false);

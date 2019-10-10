@@ -5,6 +5,22 @@ parts are intended to be printed with a relatively high-temperature
 and tough material, but prototyping can be done in PLA just to gauge
 fitment.
 
+I've had good luck with the Colorfabb HT line of PET filaments for
+final prints.
+
+
+## Goals
+
+Produce the parts I'm missing for my brat build of a Suzuki GT250/T350
+mashup.
+
+* Gauge cluster
+* Airbox
+* Battery box
+* Signals
+* Taillight
+* License mount
+
 
 # Contact
 

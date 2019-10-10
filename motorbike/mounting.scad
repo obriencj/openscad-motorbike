@@ -4,22 +4,12 @@
 */
 
 
-use <common.scad>;
-use <vbracket.scad>;
-use <ignition.scad>;
+use <utils/copies.scad>;
+use <utils/shapes.scad>;
+use <utils/materials.scad>;
 
-
-
-module mount_pin(pin_r, pin_h, thread_r, thread_h, $fn=100) {
-     color("Silver") {
-	  cylinder(pin_h, r=pin_r);
-     };
-     color("Gold") {
-	  translate([0, 0, pin_h]) {
-	       cylinder(thread_h, r=thread_r);
-	  };
-     };
-}
+use <models/vbracket.scad>;
+use <models/ignition.scad>;
 
 
 module stubs(stubs_r) {

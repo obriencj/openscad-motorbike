@@ -4,7 +4,7 @@
 */
 
 
-use <common.scad>;
+use <../utils/copies.scad>;
 
 
 function gt250_crosscut_inner_r() = 9.5;
@@ -19,12 +19,12 @@ module crosscut(height, crossthick, inner_r, outer_r, $fn=100) {
      linear_extrude(height) {
 	  intersection() {
 	       union() {
-		    circle(r=inner_r);
+		    circle(inner_r);
 		    copy_rotate(z=90) {
 			 square([outer_r * 2, crossthick], center=true);
 		    };
 	       };
-	       circle(r=outer_r);
+	       circle(outer_r);
 	  };
      };
 }
