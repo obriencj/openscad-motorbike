@@ -4,6 +4,7 @@ SOURCES = $(wildcard *.scad)
 
 
 OPENSCAD = openscad
+ADMESH = admesh
 
 
 default: all
@@ -18,6 +19,7 @@ clean:
 
 %.stl: %.scad
 	$(OPENSCAD) $< -o $@
+	$(ADMESH) $@ -b $@
 
 
 # The end.

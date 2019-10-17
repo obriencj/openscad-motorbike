@@ -1,9 +1,9 @@
 
-use <common.scad>;
-use <minigauge.scad>;
-use <ignition.scad>;
-use <mounting.scad>;
 
+use <motorbike/utils/copies.scad>;
+use <motorbike/models/minigauge.scad>;
+use <motorbike/models/ignition.scad>;
+use <motorbike/mounting.scad>;
 
 
 module gt250_mini_cluster() {
@@ -20,7 +20,7 @@ module gt250_mini_cluster() {
      };
 
      translate([0, ignition_offset, -8]) {
-	  gt250_ignition(false);
+	  gt250_ignition(true);
      };
 
      copy_translate(-pin_distance) {
