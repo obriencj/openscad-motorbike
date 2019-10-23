@@ -4,7 +4,7 @@
 */
 
 
-function tangent(p1, p2) =
+function shared_tangents(p1, p2) =
      let(r1 = p1[2],
 	 r2 = p2[2],
 	 dx = p2.x - p1.x,
@@ -26,7 +26,7 @@ module _rounded_polygon(points, $fn=100) {
      p_len = len(points);
 
      function p_tang(index) =
-	  tangent(points[index], points[(index + 1) % p_len]);
+	  shared_tangents(points[index], points[(index + 1) % p_len]);
 
      // all the positive radius circles
      for(p = points) {
@@ -69,8 +69,12 @@ module rounded_polygon(points, thick=0, $fn=100) {
 }
 
 
+function _r_adj(r, adj) =
+     let(ra = r + adj) (r > 0)? max(0, ra): ra;
+
+
 function adj_rounded_poly(points, adj) =
-     [for(p=points) [p.x, p.y, p[2] + adj]];
+     [for(p=points) [p.x, p.y, _r_adj(p[2], adj)]];
 
 
 module rounded_inset_poly(points, inset, thick, lip=undef) {
