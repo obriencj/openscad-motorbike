@@ -1,6 +1,7 @@
-use <common.scad>;
-use <ignition.scad>;
 
+
+use <../utils/shapes.scad>;
+use <../models/ignition.scad>;
 
 
 module cutout_sample($fn=100) {
