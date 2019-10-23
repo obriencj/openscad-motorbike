@@ -1,9 +1,9 @@
 
 
-use <motorbike/utils/copies.scad>;
-use <motorbike/models/minigauge.scad>;
-use <motorbike/models/ignition.scad>;
-use <motorbike/mounting.scad>;
+use <../utils/copies.scad>;
+use <../models/minigauge.scad>;
+use <../models/ignition.scad>;
+use <../mounting.scad>;
 
 
 module gt250_mini_cluster() {
