@@ -3,7 +3,7 @@
 use <../utils/copies.scad>;
 use <../models/minigauge.scad>;
 use <../models/ignition.scad>;
-use <../mounting.scad>;
+use <../gauge_cluster.scad>;
 
 
 module gt250_mini_cluster() {
