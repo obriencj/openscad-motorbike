@@ -4,10 +4,7 @@ use <utils/copies.scad>;
 use <utils/shapes.scad>;
 
 
-
-module tail_light_bracket() {
-
-}
+function us_mc_license_hole_width() = 146;
 
 
 function license_points(license_w, mount_w) =
@@ -19,7 +16,7 @@ function license_points(license_w, mount_w) =
       [-mount_w/2, 0, 12]];
 
 
-module license_bracket(license_w=155, mount_w=50, thick=2, brim=3, $fn=100) {
+module _license_bracket(license_w, mount_w, thick=2, brim=3, $fn=100) {
 
      points = license_points(license_w, mount_w);
 
@@ -57,7 +54,12 @@ module license_bracket(license_w=155, mount_w=50, thick=2, brim=3, $fn=100) {
 }
 
 
-license_bracket();
+module us_license_bracket(mounting_width) {
+     _license_bracket(us_mc_license_hole_width(), mounting_width);
+}
+
+
+us_license_bracket(42);
 
 
 // The end.
