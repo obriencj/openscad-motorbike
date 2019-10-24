@@ -88,6 +88,14 @@ module rounded_inset_poly(points, inset, thick, lip=undef) {
 }
 
 
+module rounded_outset_poly(points, inset, thick, lip=undef) {
+     tl = lip? (thick - lip): (thick / 2);
+
+     rounded_polygon(points, tl);
+     rounded_hollow_poly(points, inset, thick);
+}
+
+
 module rounded_hollow_poly(points, inset, thick) {
      linear_extrude(thick) {
 	  difference() {
