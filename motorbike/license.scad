@@ -59,7 +59,7 @@ module us_license_bracket(mounting_width) {
 }
 
 
-us_license_bracket(42);
+us_license_bracket(40);
 
 
 // The end.
